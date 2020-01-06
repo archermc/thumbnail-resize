@@ -45,7 +45,7 @@ custom:
 functions:
   upload:
     name: ${self:service.name}-${self:provider.stage}-lambda-upload
-    handler: handler.upload
+    handler: handlers/handler.upload
     events:
       - http:
           path: images/upload
@@ -53,7 +53,7 @@ functions:
 
   resize:
     name: ${self:service.name}-${self:provider.stage}-lambda-resize
-    handler: handler.resize
+    handler: handlers/handler.resize
     events:
       - s3:
           bucket: ${self:service.name}-${self:provider.stage}-s3-images # ${env:IMAGES_BUCKET_NAME}

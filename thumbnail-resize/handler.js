@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports.upload = async event => {
+export const upload = async (event) => {
   return {
     statusCode: 200,
     body: JSON.stringify(
@@ -12,9 +12,9 @@ module.exports.upload = async event => {
       2
     ),
   };
-};
+}
 
-module.exports.resize = async event => {
+export const resize = async (event) => {
   return {
     statusCode: 200,
     body: JSON.stringify(
@@ -26,4 +26,4 @@ module.exports.resize = async event => {
       2
     ),
   };
-};
+}

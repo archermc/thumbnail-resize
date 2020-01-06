@@ -1,6 +1,4 @@
-'use strict';
-
-export const resize = async (event) => {
+export const handler = async (event) => {
   return {
     statusCode: 200,
     body: JSON.stringify(

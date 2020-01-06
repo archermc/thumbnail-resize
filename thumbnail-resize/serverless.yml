@@ -6,10 +6,6 @@ provider:
   name: aws
   runtime: nodejs10.x
 
-  # environment:
-  #   IMAGES_BUCKET_NAME: images
-  #   ThumbnailsBucketName: thumbnails
-
   # you can overwrite defaults here
   stage: dev
   region: us-east-1
@@ -41,22 +37,25 @@ custom:
   webpack:
     webpackConfig: ./webpack.config.js
     includeModules: true
+    
+  s3Prefix: ${self:service.name}-${self:provider.stage}-s3
+  lambdaPrefix: ${self:service.name}-${self:provider.stage}-lambda
 
 functions:
   upload:
-    name: ${self:service.name}-${self:provider.stage}-lambda-upload
-    handler: handlers/handler.upload
+    name: ${self:custom.lambdaPrefix}-upload
+    handler: handlers/upload.handler
     events:
       - http:
           path: images/upload
           method: post
 
   resize:
-    name: ${self:service.name}-${self:provider.stage}-lambda-resize
-    handler: handlers/handler.resize
+    name: ${self:custom.lambdaPrefix}-resize
+    handler: handlers/resize.handler
     events:
       - s3:
-          bucket: ${self:service.name}-${self:provider.stage}-s3-images # ${env:IMAGES_BUCKET_NAME}
+          bucket: ${self:custom.s3Prefix}-images
           event: s3:ObjectCreated:*
 
 # you can add CloudFormation resource templates here
@@ -65,4 +64,4 @@ resources:
     ThumbnailBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:service.name}-${self:provider.stage}-s3-thumbnails
+        BucketName: ${self:custom.s3Prefix}-thumbnails

@@ -1,32 +1,50 @@
+const path = require('path');
 const slsw = require('serverless-webpack');
 const nodeExternals = require('webpack-node-externals');
 
 module.exports = {
-  entry: slsw.lib.entries,
-  target: 'node',
-  // Generate sourcemaps for proper error messages
-  devtool: 'source-map',
-  // Since 'aws-sdk' is not compatible with webpack,
-  // we exclude all node dependencies
-  externals: [nodeExternals()],
+  context: __dirname,
   mode: slsw.lib.webpack.isLocal ? 'development' : 'production',
-  optimization: {
-    // We no not want to minimize our code.
-    minimize: false,
+  entry: slsw.lib.entries,
+  devtool: slsw.lib.webpack.isLocal ? 'cheap-module-eval-source-map' : 'source-map',
+  resolve: {
+    extensions: ['.mjs', '.json', '.ts'],
+    symlinks: false,
+    cacheWithContext: false,
   },
-  performance: {
-    // Turn off size warnings for entry points
-    hints: false,
+  output: {
+    libraryTarget: 'commonjs',
+    path: path.join(__dirname, '.webpack'),
+    filename: '[name].js',
   },
-  // Run babel on all .js files and skip those in node_modules
+  target: 'node',
+  externals: [nodeExternals()],
   module: {
     rules: [
+      // all files with a `.ts` or `.tsx` extension will be handled by `ts-loader`
       {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        include: __dirname,
-        exclude: /node_modules/,
+        test: /\.(tsx?)$/,
+        loader: 'ts-loader',
+        exclude: [
+          [
+            path.resolve(__dirname, 'node_modules'),
+            path.resolve(__dirname, '.serverless'),
+            path.resolve(__dirname, '.webpack'),
+          ],
+        ],
+        options: {
+          transpileOnly: true,
+          experimentalWatchApi: true,
+        },
       },
     ],
   },
+  plugins: [
+    // new ForkTsCheckerWebpackPlugin({
+    //   eslint: true,
+    //   eslintOptions: {
+    //     cache: true
+    //   }
+    // })
+  ],
 };

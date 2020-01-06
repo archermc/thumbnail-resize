@@ -1,0 +1,67 @@
+service: thumbnail-resize
+app: thumbnail-resize
+org: archermcneill
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+
+  # environment:
+  #   IMAGES_BUCKET_NAME: images
+  #   ThumbnailsBucketName: thumbnails
+
+  # you can overwrite defaults here
+  stage: dev
+  region: us-east-1
+
+# you can add statements to the Lambda function's IAM Role here
+#  iamRoleStatements:
+#    - Effect: "Allow"
+#      Action:
+#        - "s3:ListBucket"
+#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
+#    - Effect: "Allow"
+#      Action:
+#        - "s3:PutObject"
+#      Resource:
+#        Fn::Join:
+#          - ""
+#          - - "arn:aws:s3:::"
+#            - "Ref" : "ServerlessDeploymentBucket"
+#            - "/*"
+
+
+
+# you can add packaging information here
+#package:
+#  include:
+#    - include-me.js
+#    - include-me-dir/**
+#  exclude:
+#    - exclude-me.js
+#    - exclude-me-dir/**
+
+functions:
+  upload:
+    name: ${self:service.name}-${self:provider.stage}-lambda-upload
+    handler: handler.upload
+    events:
+      - http:
+          path: images/upload
+          method: post
+
+  resize:
+    name: ${self:service.name}-${self:provider.stage}-lambda-resize
+    handler: handler.resize
+    events:
+      - s3:
+          bucket: ${self:service.name}-${self:provider.stage}-s3-images # ${env:IMAGES_BUCKET_NAME}
+          event: s3:ObjectCreated:*
+
+# you can add CloudFormation resource templates here
+resources:
+  Resources:
+    ThumbnailBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:service.name}-${self:provider.stage}-s3-thumbnails

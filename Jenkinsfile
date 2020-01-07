@@ -12,7 +12,7 @@ pipeline {
         }
         stage('Deploy application') {
             steps{
-                sh "npx serverless deploy --stage ${params.stage}"
+                sh "npx serverless deploy --stage ${params.stage} --profile default"
             }
         }
     }

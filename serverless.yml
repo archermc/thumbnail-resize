@@ -6,9 +6,8 @@ provider:
   name: aws
   runtime: nodejs10.x
 
-  # you can overwrite defaults here
-  stage: dev
-  region: us-east-1
+  stage: ${opts:stage, "dev"}
+  region: ${opts:region, "us-east-1"}
 
 # you can add statements to the Lambda function's IAM Role here
 #  iamRoleStatements:
@@ -29,7 +28,6 @@ provider:
 plugins:
   - serverless-webpack
 
-# you can add packaging information here
 package:
   individually: true
 
@@ -37,7 +35,7 @@ custom:
   webpack:
     webpackConfig: ./webpack.config.js
     includeModules: true
-    
+
   s3Prefix: ${self:service.name}-${self:provider.stage}-s3
   lambdaPrefix: ${self:service.name}-${self:provider.stage}-lambda
 
@@ -58,7 +56,6 @@ functions:
           bucket: ${self:custom.s3Prefix}-images
           event: s3:ObjectCreated:*
 
-# you can add CloudFormation resource templates here
 resources:
   Resources:
     ThumbnailBucket:

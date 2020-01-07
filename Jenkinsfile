@@ -7,13 +7,12 @@ pipeline {
     stages {
         stage('Install packages') {
             steps {
-                sh 'ls'
                 sh "npm ci"
             }
         }
         stage('Deploy application') {
             steps{
-                sh "serverless deploy --stage ${params.stage}"
+                sh "npx serverless deploy --stage ${params.stage}"
             }
         }
     }

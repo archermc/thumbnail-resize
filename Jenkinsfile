@@ -7,8 +7,9 @@ pipeline {
     stages {
         stage('Install packages') {
             steps {
-                sh 'cd thumbnail-resize'
+
                 sh 'ls'
+                sh 'cd thumbnail-resize'
                 sh "npm ci"
             }
         }

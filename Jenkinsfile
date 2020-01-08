@@ -16,6 +16,9 @@ pipeline {
             steps{
               nodejs('Nodejs') {
                   withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: '63716841-9d86-4e7e-bdbe-e6eef3134e56', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                    sh "ls ~"
+                    sh "ls ~/.aws"
+                    sh "ls ~/.aws/credentials"
                     sh "serverless config credentials --provider aws --key ${AWS_ACCESS_KEY_ID} --secret ${AWS_SECRET_ACCESS_KEY}"
                     sh "serverless deploy --stage ${params.stage}"
                   }

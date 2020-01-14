@@ -121,8 +121,7 @@ resources:
       Properties:
         RoleName: ${self:custom.prefix}-ThumbnailsLambdaRole
         ManagedPolicyArns:
-          - Ref: ThumbnailsLambdaPolicy
-          - Ref: ImagesLambdaPolicy
+          - !Ref ThumbnailsLambdaPolicy
           - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
         AssumeRolePolicyDocument:
           Version: "2012-10-17"

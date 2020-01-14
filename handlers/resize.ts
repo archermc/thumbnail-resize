@@ -10,9 +10,9 @@ export const handler = async (event: S3CreateEvent) => {
 
   const request = GetObjectRequest.fromEvent(event);
 
-  console.log('Get request:\r\n' + request);
+  console.log('Get request:\r\n' + JSON.stringify(request));
 
-  let response: any;
+  let response: AWS.S3.GetObjectOutput;
   try {
     response = await s3.getObject(request).promise();
   } catch (e) {
@@ -23,10 +23,12 @@ export const handler = async (event: S3CreateEvent) => {
   // actual resizing of image goes here
 
   const uploadRequest: PutObjectRequest = {
-    Bucket: `arn:aws:s3:::${thumbnailsBucket}`,
+    Bucket: thumbnailsBucket,
     Key: request.Key,
     Body: response.Body
   };
+
+  console.log('Put request:\r\n' + JSON.stringify(uploadRequest));
 
   try {
     await s3.upload(uploadRequest).promise();

@@ -15,7 +15,7 @@ export const handler = async (event: APIGatewayEvent) => {
   const image = payload.image;
 
   let key = uuidv4();
-  key += ':' + payload.imageName;
+  key += '/' + payload.imageName;
 
   console.log('Key: ' + key);
 

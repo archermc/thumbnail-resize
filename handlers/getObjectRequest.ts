@@ -5,7 +5,7 @@ export class GetObjectRequest {
   Key: string;
 
   static fromEvent(event: S3CreateEvent) {
-    const bucket = event.Records[0].s3.bucket.arn;
+    const bucket = event.Records[0].s3.bucket.name;
     const key = event.Records[0].s3.object.key;
 
     return new this(bucket, key);

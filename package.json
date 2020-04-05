@@ -4,8 +4,8 @@
   "description": "Serverless webpack application that resizes pictures to thumbnails using Typescript",
   "main": "handler.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "cd .\\layers\\node_deps\\nodejs && npm install && cd ..\\..\\.. && serverless deploy"
+    "deploy": "cd .\\layers\\node_deps\\nodejs && npm install && cd ..\\..\\.. && serverless deploy",
+    "install:deps": "cd layers/node_deps/nodejs && npm install"
   },
   "dependencies": {
     "node_deps": "file:layers/node_deps/nodejs"
@@ -16,6 +16,7 @@
     "@types/uuid": "^3.4.6",
     "aws-sdk": "^2.600.0",
     "fork-ts-checker-webpack-plugin": "^3.0.1",
+    "jimp": "^0.9.3",
     "serverless-webpack": "^5.2.0",
     "source-map-support": "^0.5.10",
     "ts-loader": "^5.3.3",

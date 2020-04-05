@@ -3,6 +3,7 @@ import { PutObjectRequest } from "aws-sdk/clients/s3";
 import { createResponse } from "../utils";
 import { GetObjectRequest } from "./getObjectRequest";
 import { S3CreateEvent } from "aws-lambda";
+import Jimp, { MIME_JPEG } from 'jimp/es';
 
 export const handler = async (event: S3CreateEvent) => {
   const s3 = new AWS.S3();
@@ -20,12 +21,18 @@ export const handler = async (event: S3CreateEvent) => {
     return createResponse(500, e);
   }
 
-  // actual resizing of image goes here
+  const thumbnailKey = getThumbnailKey(request.Key);
+
+  if (!thumbnailKey) {
+    return createResponse(400);
+  }
+
+  const resized = await resizeImage(response.Body.toString(), 300);
 
   const uploadRequest: PutObjectRequest = {
     Bucket: thumbnailsBucket,
-    Key: request.Key,
-    Body: response.Body
+    Key: thumbnailKey,
+    Body: resized
   };
 
   console.log('Put request:\r\n' + JSON.stringify(uploadRequest));
@@ -38,4 +45,32 @@ export const handler = async (event: S3CreateEvent) => {
   }
 
   return createResponse(200);
+}
+
+const getThumbnailKey = (key: string) => {
+  try {
+    const nameSplit = key.split(/[./]/);
+
+    const uuid = nameSplit[0];
+    const name = nameSplit[1];
+    const ext = nameSplit[2];
+
+    return `${uuid}/${name}-thumbnail.${ext}`;
+  } catch (e) {
+    console.error(`Could not parse key ${key} to get file name`, e);
+    return null;
+  }
+}
+
+const resizeImage = async (image: string, width: number) => {
+  console.log('base64: ' + image);
+  const photoBuffer = Buffer.from(image, 'base64');
+
+  console.log('buffer: ' + JSON.stringify(photoBuffer));
+  const jimp = await Jimp.read(photoBuffer);
+
+  console.log('jimp: ' + JSON.stringify(jimp));
+  const f = jimp.resize(width, Jimp.AUTO);
+
+  return f.getBufferAsync(MIME_JPEG);
 }

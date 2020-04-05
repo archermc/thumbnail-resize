@@ -4,7 +4,14 @@ import uuidv4 from 'uuid/v4';
 import UploadBody from './uploadBody';
 import { createResponse } from '../utils';
 
-export const handler = async (event: APIGatewayEvent) => {
+export const handler = async (event: APIGatewayEvent, context) => {
+  console.log('hello');
+  try {
+    console.log('body: ' + context);
+  } catch (e) {
+    console.error(e, event); 
+  }
+
   const payload = JSON.parse(event.body) as UploadBody;
 
   const s3 = new AWS.S3();

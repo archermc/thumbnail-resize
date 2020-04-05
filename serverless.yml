@@ -6,7 +6,7 @@ provider:
   name: aws
   runtime: nodejs10.x
 
-  stage: ${opts:stage, "dev"}
+  stage: ${opts:stage, "lab"}
   region: ${opts:region, "us-east-1"}
 
 # you can add statements to the Lambda function's IAM Role here
@@ -40,6 +40,7 @@ custom:
       forceExclude:
         - aws-sdk
         - uuid
+        - jimp
 
   prefix: ${self:service.name}-${self:provider.stage}
   s3Prefix: ${self:custom.prefix}-s3

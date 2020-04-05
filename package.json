@@ -4,9 +4,12 @@
   "description": "Serverless webpack application that resizes pictures to thumbnails using Typescript",
   "main": "handler.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "cd .\\layers\\node_deps\\nodejs && npm install && cd ..\\..\\.. && serverless deploy"
   },
-  "dependencies": {},
+  "dependencies": {
+    "node_deps": "file:layers/node_deps/nodejs"
+  },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.17",
     "@types/node": "^10.17.13",
